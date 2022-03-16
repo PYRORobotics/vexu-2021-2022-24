@@ -18,7 +18,7 @@ inline okapi::Motor rightLift(6);
 inline pyro::chassis chassis(
         {-19, 18, -16},    // Left motors are 3 & 4
         {14, -13, 12},     // Right motors are 1 & 2 (reversed)
-        0.6666
+        1.5
 );
 
 //inline pros::Imu imu(14);

@@ -34,15 +34,15 @@ void initialize() {
 
     leftLift.setBrakeMode(AbstractMotor::brakeMode::hold);
     rightLift.setBrakeMode(AbstractMotor::brakeMode::hold);
-    back.setEncoderUnits(AbstractMotor::encoderUnits::degrees);
-    back.setGearing(okapi::AbstractMotor::gearset::red);
+    //back.setEncoderUnits(AbstractMotor::encoderUnits::degrees);
+    //back.setGearing(okapi::AbstractMotor::gearset::red);
 
     chassis.chassisController->getModel()->setBrakeMode(AbstractMotor::brakeMode::hold);
 
     pros::delay(50);
-    while(imu.is_calibrating()){
+    /*while(imu.is_calibrating()){
         pros::delay(20);
-    }
+    }*/
 
     /*
     chassis.profileController->generatePath({
@@ -53,7 +53,7 @@ void initialize() {
 
     chassis.profileController->generatePath({
                                                     {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
-                                                    {41_in, 0_ft, 0_deg}}, // The next point in the profile, 3 feet forward
+                                                    {18.5_in, 0_ft, 0_deg}}, // The next point in the profile, 3 feet forward
                                             "forwardGoal" // Profile name
     );
 
@@ -90,7 +90,7 @@ void startLift(){
     rightLift.moveVoltage(-4000);
 };
 
-int autonomousMode = 0;
+int autonomousMode = 3;
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -109,7 +109,7 @@ void autonomous() {
         printf("start of auton pos: %f\n", jaws1.getPosition());
         jaws1.open();
 
-        pros::Task StartLift(startLift);
+        //pros::Task StartLift(startLift);
 
         printf("end of auton pos: %f\n", jaws1.getPosition());
         int runTime = 0;
@@ -145,6 +145,52 @@ void autonomous() {
         printf("turning done\n");
         pros::delay(5000);
     }
+    else if(autonomousMode == 3){
+        printf("start of auton pos: %f\n", jaws1.getPosition());
+        jaws1.open();
+
+        //pros::Task StartLift(startLift);
+
+        printf("end of auton pos: %f\n", jaws1.getPosition());
+        int runTime = 0;
+
+        chassis.profileController->setTarget("forwardGoal");
+        while (!jaws1.getNewTrigger() && runTime < 2000) {
+            pros::delay(10);
+            runTime += 10;
+        }
+        if(runTime >= 2000){
+            masterLCD.setControllerLCD(0, "Auton Timeout");
+        }
+
+        jaws1.close();
+
+        pros::delay(100);
+        chassis.profileController->waitUntilSettled();
+
+        chassis.profileController->setTarget("forwardGoal", true);
+        pros::delay(100);
+        chassis.profileController->waitUntilSettled();
+
+        pros::delay(2000);
+
+        chassis.chassisController->setMaxVelocity(50);
+        chassis.chassisController->turnAngle(50_deg);
+
+
+        chassis.chassisController->setMaxVelocity(100);
+        chassis.chassisController->moveDistance(1_ft);
+
+        chassis.chassisController->setMaxVelocity(50);
+        chassis.chassisController->turnAngle(-50_deg);
+
+
+        chassis.chassisController->setMaxVelocity(100);
+        chassis.chassisController->moveDistance(100_ft);
+
+
+
+    }
 }
 
 /**
@@ -161,7 +207,7 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 [[noreturn]] void opcontrol() {
-    imu.tare();
+    //imu.tare();
 
     bool armOut = false;
     bool frontLiftUp = true;
@@ -173,22 +219,24 @@ void autonomous() {
 
         //masterLCD.setControllerLCD(0, "degR: " + std::to_string(imu.get_roll()));
         //masterLCD.setControllerLCD(1, "degY: " + std::to_string(imu.get_yaw()));
-        masterLCD.setControllerLCD(0, "left: " + std::to_string((encoderLeft.get()/360.0)*PI*2.75));
-        masterLCD.setControllerLCD(1, "right: " + std::to_string((encoderRight.get()/360.0)*PI*2.75));
+        //masterLCD.setControllerLCD(0, "left: " + std::to_string((encoderLeft.get()/360.0)*PI*2.75));
+        //masterLCD.setControllerLCD(1, "right: " + std::to_string((encoderRight.get()/360.0)*PI*2.75));
+        masterLCD.setControllerLCD(0, "PYRO");
+        masterLCD.setControllerLCD(1, "PYRO");
         masterLCD.setControllerLCD(2, "temp: " + std::to_string(jaws1.getTemperature()));
 
 
-        if(fabs(imu.get_roll()) > 33 && fabs(imu.get_roll()) < 360){
-        //if(false){
-            chassis.arcade((imu.get_roll() > 0) ? 1 : -1, 0, 0);
+        //if(fabs(imu.get_roll()) > 33 && fabs(imu.get_roll()) < 360){
+        if(false){
+            //chassis.arcade((imu.get_roll() > 0) ? 1 : -1, 0, 0);
         }
         else {
             if (fabs(master.getAnalog(ControllerAnalog::leftY)) > 0.05 ||
-                fabs(master.getAnalog(ControllerAnalog::rightY)) > 0.05) {
+                fabs(master.getAnalog(ControllerAnalog::rightX)) > 0.05) {
                 //printf("got here\n");
                 chassis.setCurrentLimit(2500);
-                chassis.tank(master.getAnalog(ControllerAnalog::leftY),
-                             master.getAnalog(ControllerAnalog::rightY), 0.05);
+                chassis.arcade(master.getAnalog(ControllerAnalog::leftY),
+                             master.getAnalog(ControllerAnalog::rightX), 0.05);
             } else {
                 //chassis.tank(0, 0, 0.05);
                 //chassis.setCurrentLimit(0);
@@ -239,42 +287,19 @@ void autonomous() {
 
 
         if(master.getDigital(ControllerDigital::L1)){
-            if(leftLift.getPosition() < 2900){
-                leftLift.setCurrentLimit(2500);
-                leftLift.moveVelocity(200);
-            }
-            else{
-                leftLift.moveVelocity(0);
-            }
+            leftLift.setCurrentLimit(2500);
+            leftLift.moveVelocity(200);
 
-            if(rightLift.getPosition() < 2900){
-                rightLift.setCurrentLimit(2500);
-                rightLift.moveVelocity(200);
-            }
-            else{
-                rightLift.moveVelocity(0);
-            }
+            rightLift.setCurrentLimit(2500);
+            rightLift.moveVelocity(200);
+
         }
         else if(master.getDigital(ControllerDigital::L2)){
-            if(leftLift.getPosition() > 0){
-                leftLift.setCurrentLimit(2500);
-                leftLift.moveVelocity(-200);
-            }
-            else{
-                leftLift.setCurrentLimit(0);
-                leftLift.moveVoltage(-2000);
-                leftLift.tarePosition();
-            }
+            leftLift.setCurrentLimit(2500);
+            leftLift.moveVelocity(-200);
 
-            if(rightLift.getPosition() > 0){
-                rightLift.setCurrentLimit(2500);
-                rightLift.moveVelocity(-200);
-            }
-            else{
-                rightLift.setCurrentLimit(0);
-                rightLift.moveVoltage(-2000);
-                rightLift.tarePosition();
-            }
+            rightLift.setCurrentLimit(2500);
+            rightLift.moveVelocity(-200);
         }
         else{
             //rightLift.setCurrentLimit(0);
@@ -293,6 +318,7 @@ void autonomous() {
             jaws1.close();
         }
 
+        /*
         if(prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)){
             jaws2.calibrate();
         }
@@ -322,6 +348,7 @@ void autonomous() {
         else{
             back.moveAbsolute(backPos, 50);
         }
+         */
 		pros::delay(10);
 	}
 }

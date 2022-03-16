@@ -75,7 +75,7 @@ namespace pyro {
 
     bool jaws::close_task() {
         if(state == OPEN) {
-            jawsMotor.moveRelative(40, 100);
+            jawsMotor.moveRelative(60, 100);
             pros::delay(500);
             jawsMotor.moveVoltage(-2000);
             state = CLOSED;
