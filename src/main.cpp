@@ -32,8 +32,6 @@ void initialize() {
 	pros::lcd::register_btn1_cb(on_center_button);
 
 
-    leftLift.setBrakeMode(AbstractMotor::brakeMode::hold);
-    rightLift.setBrakeMode(AbstractMotor::brakeMode::hold);
     //back.setEncoderUnits(AbstractMotor::encoderUnits::degrees);
     //back.setGearing(okapi::AbstractMotor::gearset::red);
 
@@ -82,13 +80,13 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-void startLift(){
-    leftLift.moveAbsolute(400, 200);
-    rightLift.moveAbsolute(400, 200);
-    pros::delay(400);
-    leftLift.moveVoltage(-4000);
-    rightLift.moveVoltage(-4000);
-};
+//void startLift(){
+//    leftLift.moveAbsolute(400, 200);
+//    rightLift.moveAbsolute(400, 200);
+//    pros::delay(400);
+//    leftLift.moveVoltage(-4000);
+//    rightLift.moveVoltage(-4000);
+//};
 
 int autonomousMode = 3;
 
@@ -106,16 +104,16 @@ int autonomousMode = 3;
 void autonomous() {
 
     if(autonomousMode == 0) {
-        printf("start of auton pos: %f\n", jaws1.getPosition());
-        jaws1.open();
+        printf("start of auton pos: %f\n", main_jaws.getPosition());
+        main_jaws.open();
 
         //pros::Task StartLift(startLift);
 
-        printf("end of auton pos: %f\n", jaws1.getPosition());
+        printf("end of auton pos: %f\n", main_jaws.getPosition());
         int runTime = 0;
 
         chassis.profileController->setTarget("forwardGoal");
-        while (!jaws1.getNewTrigger() && runTime < 2000) {
+        while (!main_jaws.getNewTrigger() && runTime < 2000) {
             pros::delay(10);
             runTime += 10;
         }
@@ -123,7 +121,7 @@ void autonomous() {
             masterLCD.setControllerLCD(0, "Auton Timeout");
         }
 
-        jaws1.close();
+        main_jaws.close();
 
         pros::delay(100);
         chassis.profileController->waitUntilSettled();
@@ -146,16 +144,16 @@ void autonomous() {
         pros::delay(5000);
     }
     else if(autonomousMode == 3){
-        printf("start of auton pos: %f\n", jaws1.getPosition());
-        jaws1.open();
+        printf("start of auton pos: %f\n", main_jaws.getPosition());
+        main_jaws.open();
 
         //pros::Task StartLift(startLift);
 
-        printf("end of auton pos: %f\n", jaws1.getPosition());
+        printf("end of auton pos: %f\n", main_jaws.getPosition());
         int runTime = 0;
 
         chassis.profileController->setTarget("forwardGoal");
-        while (!jaws1.getNewTrigger() && runTime < 2000) {
+        while (!main_jaws.getNewTrigger() && runTime < 2000) {
             pros::delay(10);
             runTime += 10;
         }
@@ -163,7 +161,7 @@ void autonomous() {
             masterLCD.setControllerLCD(0, "Auton Timeout");
         }
 
-        jaws1.close();
+        main_jaws.close();
 
         pros::delay(100);
         chassis.profileController->waitUntilSettled();
@@ -215,7 +213,7 @@ void autonomous() {
     double backPos = 0;
 	while (true) {
 
-        //masterLCD.setControllerLCD(0, "ctemp: " + std::to_string(jaws1.getTemperature()));
+        //masterLCD.setControllerLCD(0, "ctemp: " + std::to_string(main_jaws.getTemperature()));
 
         //masterLCD.setControllerLCD(0, "degR: " + std::to_string(imu.get_roll()));
         //masterLCD.setControllerLCD(1, "degY: " + std::to_string(imu.get_yaw()));
@@ -223,7 +221,7 @@ void autonomous() {
         //masterLCD.setControllerLCD(1, "right: " + std::to_string((encoderRight.get()/360.0)*PI*2.75));
         masterLCD.setControllerLCD(0, "PYRO");
         masterLCD.setControllerLCD(1, "PYRO");
-        masterLCD.setControllerLCD(2, "temp: " + std::to_string(jaws1.getTemperature()));
+        masterLCD.setControllerLCD(2, "temp: " + std::to_string(main_jaws.getTemperature()));
 
 
         //if(fabs(imu.get_roll()) > 33 && fabs(imu.get_roll()) < 360){
@@ -245,28 +243,7 @@ void autonomous() {
                 chassis.chassisController->getModel()->stop();
                 chassis.strafe(0);
             }
-
         }
-
-        /*
-        if(master.getDigital(ControllerDigital::L1)){
-            backLift.setCurrentLimit(2500);
-            frontLift.setCurrentLimit(2500);
-            backLift.moveVelocity(200);
-            frontLift.moveVelocity(200);
-        }
-        else if(master.getDigital(ControllerDigital::L2)){
-            backLift.setCurrentLimit(2500);
-            frontLift.setCurrentLimit(2500);
-            backLift.moveVelocity(-200);
-            frontLift.moveVelocity(-200);
-        }
-        else{
-            backLift.setCurrentLimit(0);
-            frontLift.setCurrentLimit(0);
-            backLift.moveVelocity(0);
-            frontLift.moveVelocity(0);
-        }*/
 
         /*
         if(prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
@@ -289,36 +266,28 @@ void autonomous() {
         }*/
 
 
-        if(master.getDigital(ControllerDigital::L1)){
-            leftLift.setCurrentLimit(2500);
-            leftLift.moveVelocity(200);
-
-            rightLift.setCurrentLimit(2500);
-            rightLift.moveVelocity(200);
-
-        }
-        else if(master.getDigital(ControllerDigital::L2)){
-            leftLift.setCurrentLimit(2500);
-            leftLift.moveVelocity(-200);
-
-            rightLift.setCurrentLimit(2500);
-            rightLift.moveVelocity(-200);
-        }
-        else{
-            //rightLift.setCurrentLimit(0);
-            //leftLift.setCurrentLimit(0);
-            rightLift.moveVelocity(0);
-            leftLift.moveVelocity(0);
-        }
-
         if(prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)){
-            jaws1.calibrate();
+            main_jaws.calibrate();
         }
         if(prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)){
-            jaws1.open();
+            main_jaws.open();
         }
-        if(jaws1.getNewTrigger() || prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)){
-            jaws1.close();
+        if(main_jaws.getNewTrigger() || prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)){
+            main_jaws.close();
+        }
+
+        if(main_lift_btn.changedToPressed()) {
+            main_lift.toggle();
+        }
+        if(side_lift_btn.changedToPressed()) {
+            side_lift.toggle();
+        }
+        if(back_lift_btn.changedToPressed()) {
+            back_lift.toggle();
+        }
+
+        if(intake_btn.changedToPressed()) {
+            intake.toggle();
         }
 
         /*
