@@ -33,7 +33,7 @@ inline pyro::chassis chassis(
 
 inline pyro::intake intake(-6);
 
-inline pyro::lift main_lift({13, -14}, 0, 2400, pyro::lift::LOWERED);
+inline pyro::lift main_lift({13, -14}, 2400, 0, pyro::lift::LOWERED);
 inline pyro::lift side_lift({7}, 0, -16500, pyro::lift::RAISED);
 inline pyro::lift back_lift({16}, -2000, -5800, pyro::lift::RAISED);
 
