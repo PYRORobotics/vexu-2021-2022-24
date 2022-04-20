@@ -9,6 +9,7 @@
 
 // controller related
 inline okapi::Controller master(okapi::ControllerId::master);
+inline okapi::Controller partner(okapi::ControllerId::partner);
 
 inline okapi::ControllerButton main_lift_btn(okapi::ControllerDigital::up);
 inline okapi::ControllerButton side_lift_btn(okapi::ControllerDigital::right);
@@ -38,7 +39,7 @@ inline pyro::lift side_lift({7}, 0, -16500, pyro::lift::RAISED);
 inline pyro::lift back_lift({16}, -2000, -5800, pyro::lift::RAISED);
 
 inline pros::ADIDigitalIn jaws1Trigger('B');
-inline pyro::jaws main_jaws(11, jaws1Trigger, 360);
+inline pyro::jaws main_jaws(11, jaws1Trigger, 420);
 
 
 

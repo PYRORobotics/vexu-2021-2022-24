@@ -22,7 +22,7 @@ namespace pyro {
         while(jawsMotor.getCurrentDraw() > 100){
             pros::delay(10);
         }
-        jawsMotor.moveVoltage(-2000);
+        jawsMotor.moveVoltage(-3000);
         pros::delay(150);
         while(abs(jawsMotor.getActualVelocity()) > 1){
             pros::delay(10);
