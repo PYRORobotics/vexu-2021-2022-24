@@ -230,12 +230,14 @@ void autonomous() {
         }
         else {
             if (fabs(master.getAnalog(ControllerAnalog::leftY)) > 0.05 ||
-                fabs(master.getAnalog(ControllerAnalog::rightX)) > 0.05 ||
+                fabs(master.getAnalog(ControllerAnalog::rightY)) > 0.05 ||
                     fabs(master.getAnalog(ControllerAnalog::leftX)) > 0.05) {
                 //printf("got here\n");
-                chassis.setCurrentLimit(2500);
-                chassis.arcade(master.getAnalog(ControllerAnalog::leftY),
-                             master.getAnalog(ControllerAnalog::rightX), 0.05);
+                //chassis.setCurrentLimit(2500);
+                //chassis.arcade(master.getAnalog(ControllerAnalog::leftY), master.getAnalog(ControllerAnalog::rightX), 0.05);
+
+                chassis.tank(master.getAnalog(ControllerAnalog::leftY), master.getAnalog(ControllerAnalog::rightY), 0.05);
+
                 chassis.strafe(master.getAnalog(ControllerAnalog::leftX));
             } else {
                 //chassis.tank(0, 0, 0.05);

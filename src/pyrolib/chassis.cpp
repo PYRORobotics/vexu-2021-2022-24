@@ -15,12 +15,19 @@ namespace pyro {
     }
 
     void chassis::strafe(double power){
-        okapi::Motor(9).setBrakeMode(okapi::AbstractMotor::brakeMode::brake);
-        okapi::Motor(9).moveVoltage(power * 12000.0);
+        okapi::Motor(9).setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+        okapi::Motor(9).moveVelocity(power * 200);
     }
 
     void chassis::tank(double left, double right, double threshold) {
-        chassisController->getModel()->tank(left, right, threshold);
+        //chassisController->getModel()->tank(left, right, threshold);
+        if(fabs(left) > threshold || fabs(right) > threshold){
+            chassisController->getModel()->right(right);
+            chassisController->getModel()->left(left);
+        }
+        else{
+            chassisController->getModel()->stop();
+        }
     }
 
     void chassis::setCurrentLimit(int milliamps){
