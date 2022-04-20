@@ -14,6 +14,11 @@ namespace pyro {
         chassisController->getModel()->arcade(forward, turn, threshold);
     }
 
+    void chassis::strafe(double power){
+        okapi::Motor(9).setBrakeMode(okapi::AbstractMotor::brakeMode::brake);
+        okapi::Motor(9).moveVoltage(power * 12000.0);
+    }
+
     void chassis::tank(double left, double right, double threshold) {
         chassisController->getModel()->tank(left, right, threshold);
     }

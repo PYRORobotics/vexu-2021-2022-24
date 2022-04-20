@@ -23,6 +23,8 @@ namespace pyro {
 
         void tank(double left, double right, double threshold = 0.05);
 
+        void strafe(double power);
+
         void setCurrentLimit(int milliamps);
 
         std::shared_ptr<okapi::ChassisController> chassisController;
