@@ -15,7 +15,7 @@ namespace pyro {
             LOWERED
         };
 
-        lift(okapi::MotorGroup lift_motors, double raised_pos, double lowered_pos, lift_state initial_state);
+        lift(okapi::MotorGroup lift_motors, double gear_ratio, double raised_pos, double lowered_pos, lift_state initial_state);
 
         void toggle();
 
@@ -32,6 +32,7 @@ namespace pyro {
 
         void lower_task();
 
+        double gear_ratio;
         double raised_pos;
         double lowered_pos;
 

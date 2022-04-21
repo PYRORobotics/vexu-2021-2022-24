@@ -33,12 +33,37 @@ inline pyro::chassis chassis(
 
 inline pyro::intake intake(-6);
 
-inline pyro::lift main_lift({13, -14}, 2400, 0, pyro::lift::LOWERED);
-inline pyro::lift side_lift({7}, 0, -16500, pyro::lift::RAISED);
-inline pyro::lift back_lift({16}, -2000, -5800, pyro::lift::RAISED);
+okapi::Motor mtr_left(13, false, okapi::AbstractMotor::gearset::red,
+                      okapi::AbstractMotor::encoderUnits::degrees);
+okapi::Motor mtr_right(14, true, okapi::AbstractMotor::gearset::red,
+                       okapi::AbstractMotor::encoderUnits::degrees);
+
+inline pyro::lift main_lift(
+        {mtr_left, mtr_right},
+        (1.0 / 6.0),
+        90, 0,
+        pyro::lift::LOWERED
+);
+
+// wip, needs updating
+inline pyro::lift side_lift(
+        {7},
+        (1.0 / 5.0),
+        0, -16500,
+        pyro::lift::RAISED
+);
+
+// wip, needs updating
+inline pyro::lift back_lift(
+        {16},
+        (1.0 / 5.0),
+        -2000, -5800,
+        pyro::lift::RAISED
+);
 
 inline pros::ADIDigitalIn jaws1Trigger('B');
 inline pyro::jaws main_jaws(11, jaws1Trigger, 360);
+// port 14 dead
 
 
 

@@ -35,7 +35,7 @@ void initialize() {
     //back.setEncoderUnits(AbstractMotor::encoderUnits::degrees);
     //back.setGearing(okapi::AbstractMotor::gearset::red);
 
-    chassis.chassisController->getModel()->setBrakeMode(AbstractMotor::brakeMode::hold);
+    chassis.chassisController->getModel()->setBrakeMode(AbstractMotor::brakeMode::coast);
 
     pros::delay(50);
     /*while(imu.is_calibrating()){
