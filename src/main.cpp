@@ -51,7 +51,7 @@ void initialize() {
 
     chassis.profileController->generatePath({
                                                     {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
-                                                    {18.5_in, 0_ft, 0_deg}}, // The next point in the profile, 3 feet forward
+                                                    {16_in, 0_ft, 0_deg}}, // The next point in the profile, 3 feet forward
                                             "forwardGoal" // Profile name
     );
 
@@ -80,15 +80,15 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-//void startLift(){
-//    leftLift.moveAbsolute(400, 200);
-//    rightLift.moveAbsolute(400, 200);
-//    pros::delay(400);
-//    leftLift.moveVoltage(-4000);
-//    rightLift.moveVoltage(-4000);
-//};
+void startLift(){
+    okapi::Motor(13).moveAbsolute(400, 200);
+    okapi::Motor(-14).moveAbsolute(400, 200);
+    pros::delay(400);
+    okapi::Motor(13).moveVoltage(-4000);
+    okapi::Motor(-14).moveVoltage(-4000);
+};
 
-int autonomousMode = 3;
+int autonomousMode = 0;
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -107,7 +107,7 @@ void autonomous() {
         printf("start of auton pos: %f\n", main_jaws.getPosition());
         main_jaws.open();
 
-        //pros::Task StartLift(startLift);
+        pros::Task StartLift(startLift);
 
         printf("end of auton pos: %f\n", main_jaws.getPosition());
         int runTime = 0;
@@ -233,9 +233,11 @@ void autonomous() {
                 fabs(master.getAnalog(ControllerAnalog::rightX)) > 0.05 ||
                     fabs(master.getAnalog(ControllerAnalog::leftX)) > 0.05) {
                 //printf("got here\n");
-                chassis.setCurrentLimit(2500);
-                chassis.arcade(master.getAnalog(ControllerAnalog::leftY),
-                             master.getAnalog(ControllerAnalog::rightX), 0.05);
+                //chassis.setCurrentLimit(2500);
+                chassis.arcade(master.getAnalog(ControllerAnalog::leftY), master.getAnalog(ControllerAnalog::rightX), 0.05);
+
+                //chassis.tank(master.getAnalog(ControllerAnalog::leftY), master.getAnalog(ControllerAnalog::rightY), 0.05);
+
                 chassis.strafe(master.getAnalog(ControllerAnalog::leftX));
             } else {
                 //chassis.tank(0, 0, 0.05);
