@@ -11,7 +11,14 @@ namespace pyro {
     }
 
     void chassis::arcade(double forward, double turn, double threshold) {
-        chassisController->getModel()->arcade(forward, turn, threshold);
+        //chassisController->getModel()->arcade(forward, turn, threshold);
+        if(fabs(forward) > threshold || fabs(turn) > threshold){
+            chassisController->getModel()->right(forward - turn);
+            chassisController->getModel()->left(forward + turn);
+        }
+        else{
+            chassisController->getModel()->stop();
+        }
     }
 
     void chassis::strafe(double power){
