@@ -34,9 +34,9 @@ inline pyro::chassis chassis(
 
 inline pyro::intake intake(-6);
 
-okapi::Motor mtr_left(13, false, okapi::AbstractMotor::gearset::red,
+inline okapi::Motor mtr_left(13, false, okapi::AbstractMotor::gearset::red,
                       okapi::AbstractMotor::encoderUnits::degrees);
-okapi::Motor mtr_right(14, true, okapi::AbstractMotor::gearset::red,
+inline okapi::Motor mtr_right(14, true, okapi::AbstractMotor::gearset::red,
                        okapi::AbstractMotor::encoderUnits::degrees);
 
 inline pyro::lift main_lift(
@@ -46,13 +46,17 @@ inline pyro::lift main_lift(
         pyro::lift::LOWERED
 );
 
+inline okapi::Motor side_lift_mtr(7, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
+
 // wip, needs updating
 inline pyro::lift side_lift(
-        {7},
+        {side_lift_mtr},
         (1.0 / 5.0),
         0, -16500,
         pyro::lift::RAISED
 );
+
+inline okapi::Motor back_lift_mtr(16, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
 
 // wip, needs updating
 inline pyro::lift back_lift(
@@ -64,6 +68,12 @@ inline pyro::lift back_lift(
 
 inline pros::ADIDigitalIn jaws1Trigger('B');
 inline pyro::jaws main_jaws(11, jaws1Trigger, 400);
+
+inline pros::ADIDigitalIn jaws2Trigger('A');
+inline pyro::jaws side_jaws(10, jaws2Trigger, 400);
+
+inline pros::ADIDigitalIn jaws3Trigger('C');
+inline pyro::jaws back_jaws(15, jaws3Trigger, 400);
 
 
 
