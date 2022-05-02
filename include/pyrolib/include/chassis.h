@@ -24,6 +24,7 @@ namespace pyro {
         void tank(double left, double right, double threshold = 0.05);
 
         void strafe(double power);
+        void strafeDistance(int deg, int velocity);
 
         void setCurrentLimit(int milliamps);
 

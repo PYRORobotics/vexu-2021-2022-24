@@ -26,6 +26,11 @@ namespace pyro {
         okapi::Motor(9).moveVelocity(power * 200);
     }
 
+    void chassis::strafeDistance(int deg, int velocity) {
+        okapi::Motor(9).setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+        okapi::Motor(9).moveRelative(deg,velocity);
+    }
+
     void chassis::tank(double left, double right, double threshold) {
         //chassisController->getModel()->tank(left, right, threshold);
         if(fabs(left) > threshold || fabs(right) > threshold){
@@ -81,10 +86,10 @@ namespace pyro {
         profileController =
                 okapi::AsyncMotionProfileControllerBuilder()
                         .withLimits({
-                                            3.0,
+                                            2.0,
                                             //0.5, // Maximum linear velocity of the Chassis in m/s
                                             0.8, // Maximum linear acceleration of the Chassis in m/s/s
-                                            100.0 // Maximum linear jerk of the Chassis in m/s/s/s
+                                            10.0 // Maximum linear jerk of the Chassis in m/s/s/s
                                     })
                         .withOutput(chassisController)
                         .buildMotionProfileController();

@@ -22,6 +22,7 @@ inline okapi::ControllerButton back_jaw_btn(okapi::ControllerDigital::B);
 inline okapi::ControllerButton intake_btn(okapi::ControllerDigital::L2);
 
 inline pros::Controller prosMaster(pros::E_CONTROLLER_MASTER);
+inline pros::Controller prosPartner(pros::E_CONTROLLER_PARTNER);
 
 inline pyro::controllerLCD masterLCD(prosMaster);
 
@@ -29,7 +30,10 @@ inline pyro::controllerLCD masterLCD(prosMaster);
 inline pyro::chassis chassis(
         {-17, 18, -19},    // Left motors are 3 & 4
         {3, -20, 21},     // Right motors are 1 & 2 (reversed)
-        1.5
+        //1.5
+        1.0,
+        4.125_in,
+        15_in
 );
 
 inline pyro::intake intake(-6);
@@ -52,28 +56,28 @@ inline okapi::Motor side_lift_mtr(7, false, okapi::AbstractMotor::gearset::red, 
 inline pyro::lift side_lift(
         {side_lift_mtr},
         (1.0 / 5.0),
-        0, -16500,
-        pyro::lift::RAISED
+        450, 0,
+        pyro::lift::LOWERED
 );
 
 inline okapi::Motor back_lift_mtr(16, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
 
 // wip, needs updating
 inline pyro::lift back_lift(
-        {16},
+        {back_lift_mtr},
         (1.0 / 5.0),
-        -2000, -5800,
+        -30, -240,
         pyro::lift::RAISED
 );
 
 inline pros::ADIDigitalIn jaws1Trigger('B');
-inline pyro::jaws main_jaws(11, jaws1Trigger, 400);
+inline pyro::jaws main_jaws(11, jaws1Trigger, 410);
 
 inline pros::ADIDigitalIn jaws2Trigger('A');
-inline pyro::jaws side_jaws(10, jaws2Trigger, 400);
+inline pyro::jaws side_jaws(10, jaws2Trigger, 410);
 
 inline pros::ADIDigitalIn jaws3Trigger('C');
-inline pyro::jaws back_jaws(15, jaws3Trigger, 400);
+inline pyro::jaws back_jaws(15, jaws3Trigger, 385);
 
 
 

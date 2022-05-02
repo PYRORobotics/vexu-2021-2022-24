@@ -51,7 +51,7 @@ void initialize() {
 
     chassis.profileController->generatePath({
                                                     {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
-                                                    {16_in, 0_ft, 0_deg}}, // The next point in the profile, 3 feet forward
+                                                    {27.5_in, 29_in, 55_deg}}, // The next point in the profile, 3 feet forward
                                             "forwardGoal" // Profile name
     );
 
@@ -81,12 +81,22 @@ void disabled() {}
 void competition_initialize() {}
 
 void startLift(){
-    okapi::Motor(13).moveAbsolute(400, 200);
-    okapi::Motor(-14).moveAbsolute(400, 200);
+    //okapi::Motor(13).moveAbsolute(400, 200);
+    //okapi::Motor(-14).moveAbsolute(400, 200);
+    mtr_left.moveAbsolute(400, 200);
+    mtr_right.moveAbsolute(400, 200);
     pros::delay(400);
-    okapi::Motor(13).moveVoltage(-4000);
-    okapi::Motor(-14).moveVoltage(-4000);
+    mtr_left.moveVoltage(-4000);
+    mtr_right.moveVoltage(-4000);
+    //okapi::Motor(13).moveVoltage(-4000);
+    //okapi::Motor(-14).moveVoltage(-4000);
 };
+
+void deploySideLift(){
+    side_lift_mtr.moveAbsolute(400, 200);
+    pros::delay(300);
+    side_lift_mtr.moveAbsolute(400, 0);
+}
 
 int autonomousMode = 0;
 
@@ -106,31 +116,61 @@ void autonomous() {
     if(autonomousMode == 0) {
         printf("start of auton pos: %f\n", main_jaws.getPosition());
         main_jaws.open();
+        side_jaws.open();
 
         pros::Task StartLift(startLift);
 
         printf("end of auton pos: %f\n", main_jaws.getPosition());
-        int runTime = 0;
 
         chassis.profileController->setTarget("forwardGoal");
-        while (!main_jaws.getNewTrigger() && runTime < 2000) {
+        pros::delay(200);
+        int runTime = 200;
+        while (!main_jaws.getNewTrigger() && runTime < 2000 && !chassis.profileController->isSettled()) {
             pros::delay(10);
             runTime += 10;
+
         }
         if(runTime >= 2000){
-            masterLCD.setControllerLCD(0, "Auton Timeout");
+            masterLCD.setControllerLCD(0, "Auton Timeout 1");
         }
+        else{
+            pros::delay(300);
+        }
+
+
+        pros::Task deployLift2(deploySideLift);
 
         main_jaws.close();
 
+        pros::delay(350);
+
+        main_lift.toggle();
+
+        deployLift2.join();
+        chassis.chassisController->getModel()->setBrakeMode(AbstractMotor::brakeMode::brake);
+        chassis.strafeDistance(1200, 200);
+
+        pros::delay(200);
+        runTime = 0;
+        while (!side_jaws.getNewTrigger() && runTime < 4000 && (okapi::Motor(9).getActualVelocity() > 0)) {
+            pros::delay(10);
+            runTime += 10;
+
+        }
+        if(runTime >= 4000){
+            masterLCD.setControllerLCD(0, "Auton Timeout 2");
+        }
+
+        side_jaws.close();
+        pros::delay(250);
+        side_lift.toggle();
+        pros::delay(100);
+
+        //chassis.profileController->setTarget("forwardGoal", true);
         pros::delay(100);
         chassis.profileController->waitUntilSettled();
 
-        chassis.profileController->setTarget("forwardGoal", true);
-        pros::delay(100);
-        chassis.profileController->waitUntilSettled();
-
-        pros::delay(2000);
+        pros::delay(6000);
     }
     else if(autonomousMode == 1) {
         chassis.profileController->setTarget("forwardGoal");
@@ -268,14 +308,35 @@ void autonomous() {
         }*/
 
 
-        if(prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)){
+        if(prosPartner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)){
             main_jaws.calibrate();
         }
+        if(prosPartner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)){
+            side_jaws.calibrate();
+        }
+        if(prosPartner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)){
+            back_jaws.calibrate();
+        }
+
         if(prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)){
             main_jaws.open();
         }
         if(main_jaws.getNewTrigger() || prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)){
             main_jaws.close();
+        }
+
+        if(prosPartner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)){
+            side_jaws.open();
+        }
+        if(side_jaws.getNewTrigger() || prosPartner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)){
+            side_jaws.close();
+        }
+
+        if(prosPartner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){
+            back_jaws.open();
+        }
+        if(back_jaws.getNewTrigger() || prosPartner.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){
+            back_jaws.close();
         }
 
         if(main_lift_btn.changedToPressed()) {
