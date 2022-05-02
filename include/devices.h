@@ -71,10 +71,10 @@ inline pyro::lift back_lift(
 );
 
 inline pros::ADIDigitalIn jaws1Trigger('B');
-inline pyro::jaws main_jaws(11, jaws1Trigger, 410);
+inline pyro::jaws main_jaws(11, jaws1Trigger, 415);
 
 inline pros::ADIDigitalIn jaws2Trigger('A');
-inline pyro::jaws side_jaws(10, jaws2Trigger, 410);
+inline pyro::jaws side_jaws(10, jaws2Trigger, 415);
 
 inline pros::ADIDigitalIn jaws3Trigger('C');
 inline pyro::jaws back_jaws(15, jaws3Trigger, 385);

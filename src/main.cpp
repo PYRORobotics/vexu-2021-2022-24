@@ -57,6 +57,12 @@ void initialize() {
 
     chassis.profileController->generatePath({
                                                     {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
+                                                    {42_in, 0_in, 0_deg}}, // The next point in the profile, 3 feet forward
+                                            "forwardGoalStraight" // Profile name
+    );
+
+    chassis.profileController->generatePath({
+                                                    {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
                                                     {12_in, 0_ft, 0_deg}}, // The next point in the profile, 3 feet forward
                                             "forwardTest" // Profile name
     );
@@ -122,10 +128,10 @@ void autonomous() {
 
         printf("end of auton pos: %f\n", main_jaws.getPosition());
 
-        chassis.profileController->setTarget("forwardGoal");
+        chassis.profileController->setTarget("forwardGoalStraight");
         pros::delay(200);
         int runTime = 200;
-        while (!main_jaws.getNewTrigger() && runTime < 2000 && !chassis.profileController->isSettled()) {
+        while (!main_jaws.getNewTrigger() && runTime < 2500 && !chassis.profileController->isSettled()) {
             pros::delay(10);
             runTime += 10;
 
@@ -147,8 +153,11 @@ void autonomous() {
         main_lift.toggle();
 
         deployLift2.join();
+        //chassis.getChassisController()->turnAngle(-10_deg);
+        pros::delay(200);
         chassis.chassisController->getModel()->setBrakeMode(AbstractMotor::brakeMode::brake);
-        chassis.strafeDistance(1200, 200);
+        chassis.chassisController->getModel()->driveVectorVoltage(0, 0.05);
+        chassis.strafeDistance(1600, 200);
 
         pros::delay(200);
         runTime = 0;
@@ -166,14 +175,14 @@ void autonomous() {
         side_lift.toggle();
         pros::delay(100);
 
-        //chassis.profileController->setTarget("forwardGoal", true);
+        chassis.profileController->setTarget("forwardGoalStraight", true);
         pros::delay(100);
         chassis.profileController->waitUntilSettled();
 
         pros::delay(6000);
     }
     else if(autonomousMode == 1) {
-        chassis.profileController->setTarget("forwardGoal");
+        chassis.profileController->setTarget("forwardGoalStraight");
         chassis.profileController->waitUntilSettled();
     }
     else if(autonomousMode == 2){
