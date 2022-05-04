@@ -63,6 +63,12 @@ void initialize() {
 
     chassis.profileController->generatePath({
                                                     {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
+                                                    {50_in, 0_in, 0_deg}}, // The next point in the profile, 3 feet forward
+                                            "backwardGoalStraight" // Profile name
+    );
+
+    chassis.profileController->generatePath({
+                                                    {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
                                                     {12_in, 0_ft, 0_deg}}, // The next point in the profile, 3 feet forward
                                             "forwardTest" // Profile name
     );
@@ -120,11 +126,11 @@ int autonomousMode = 0;
 void autonomous() {
 
     if(autonomousMode == 0) {
-        side_lift_mtr.moveVoltage(-2000);
+        //side_lift_mtr.moveVoltage(-2000);
 
         printf("start of auton pos: %f\n", main_jaws.getPosition());
         main_jaws.open();
-        side_jaws.open();
+        //side_jaws.open();
 
         pros::Task StartLift(startLift);
 
@@ -146,14 +152,14 @@ void autonomous() {
         }
 
 
-        pros::Task deployLift2(deploySideLift);
+        //pros::Task deployLift2(deploySideLift);
 
         main_jaws.close();
 
         pros::delay(350);
 
         main_lift.toggle();
-
+/*
         deployLift2.join();
         //chassis.getChassisController()->turnAngle(-10_deg);
         pros::delay(200);
@@ -176,11 +182,12 @@ void autonomous() {
         pros::delay(250);
         side_lift.toggle();
         pros::delay(100);
-
-        chassis.profileController->setTarget("forwardGoalStraight", true);
+*/
+        chassis.profileController->setTarget("backwardGoalStraight", true);
         pros::delay(100);
         chassis.profileController->waitUntilSettled();
-        main_lift.toggle();
+        //main_lift.toggle();
+        main_lift.lower();
 
         pros::delay(6000);
     }
@@ -261,6 +268,7 @@ void autonomous() {
     //imu.tare();
     main_jaws.close();
     side_jaws.close();
+    main_lift.lower();
 
     bool armOut = false;
     bool frontLiftUp = true;

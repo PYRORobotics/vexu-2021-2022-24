@@ -32,7 +32,7 @@ inline pyro::controllerLCD masterLCD(prosMaster);
 
 // motor/robot related
 inline pyro::chassis chassis(
-        {-17, 18, -19},    // Left motors are 3 & 4
+        {-17, 18, -5},    // Left motors are 3 & 4
         {3, -20, 21},     // Right motors are 1 & 2 (reversed)
         //1.5
         1.0,

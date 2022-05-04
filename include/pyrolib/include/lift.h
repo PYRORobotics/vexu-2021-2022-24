@@ -20,14 +20,15 @@ namespace pyro {
         void toggle();
 
         std::shared_ptr<okapi::MotorGroup> lift_motors;
+        void lower();
+        void raise();
+
 
     private:
 
         lift_state state;
 
-        void raise();
 
-        void lower();
 
         void raise_task();
 
