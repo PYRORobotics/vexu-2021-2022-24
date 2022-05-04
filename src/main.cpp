@@ -100,8 +100,8 @@ void startLift(){
 
 void deploySideLift(){
     side_lift_mtr.moveAbsolute(400, 200);
-    pros::delay(300);
-    side_lift_mtr.moveAbsolute(400, 0);
+    pros::delay(500);
+    side_lift_mtr.moveAbsolute(0, 200);
 }
 
 int autonomousMode = 0;
@@ -120,6 +120,8 @@ int autonomousMode = 0;
 void autonomous() {
 
     if(autonomousMode == 0) {
+        side_lift_mtr.moveVoltage(-2000);
+
         printf("start of auton pos: %f\n", main_jaws.getPosition());
         main_jaws.open();
         side_jaws.open();
@@ -157,7 +159,7 @@ void autonomous() {
         pros::delay(200);
         chassis.chassisController->getModel()->setBrakeMode(AbstractMotor::brakeMode::brake);
         chassis.chassisController->getModel()->driveVectorVoltage(0, 0.05);
-        chassis.strafeDistance(1600, 200);
+        chassis.strafeDistance(1800, 200);
 
         pros::delay(200);
         runTime = 0;
@@ -178,6 +180,7 @@ void autonomous() {
         chassis.profileController->setTarget("forwardGoalStraight", true);
         pros::delay(100);
         chassis.profileController->waitUntilSettled();
+        main_lift.toggle();
 
         pros::delay(6000);
     }
@@ -254,7 +257,6 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-// note: change to tank
 [[noreturn]] void opcontrol() {
     //imu.tare();
 
@@ -281,13 +283,13 @@ void autonomous() {
         }
         else {
             if (fabs(master.getAnalog(ControllerAnalog::leftY)) > 0.05 ||
-                fabs(master.getAnalog(ControllerAnalog::rightX)) > 0.05 ||
+                fabs(master.getAnalog(ControllerAnalog::rightY)) > 0.05 ||
                     fabs(master.getAnalog(ControllerAnalog::leftX)) > 0.05) {
                 //printf("got here\n");
                 //chassis.setCurrentLimit(2500);
-                chassis.arcade(master.getAnalog(ControllerAnalog::leftY), master.getAnalog(ControllerAnalog::rightX), 0.05);
+                //chassis.arcade(master.getAnalog(ControllerAnalog::leftY), master.getAnalog(ControllerAnalog::rightX), 0.05);
 
-                //chassis.tank(master.getAnalog(ControllerAnalog::leftY), master.getAnalog(ControllerAnalog::rightY), 0.05);
+                chassis.tank(master.getAnalog(ControllerAnalog::leftY), master.getAnalog(ControllerAnalog::rightY), 0.05);
 
                 chassis.strafe(master.getAnalog(ControllerAnalog::leftX));
             } else {
