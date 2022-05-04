@@ -21,6 +21,10 @@ inline okapi::ControllerButton back_jaw_btn(okapi::ControllerDigital::B);
 
 inline okapi::ControllerButton intake_btn(okapi::ControllerDigital::L2);
 
+inline okapi::ControllerButton front_lift_reset(okapi::ControllerDigital::X);
+inline okapi::ControllerButton back_lift_reset(okapi::ControllerDigital::B);
+
+
 inline pros::Controller prosMaster(pros::E_CONTROLLER_MASTER);
 inline pros::Controller prosPartner(pros::E_CONTROLLER_PARTNER);
 
@@ -43,8 +47,15 @@ inline okapi::Motor mtr_left(13, false, okapi::AbstractMotor::gearset::red,
 inline okapi::Motor mtr_right(14, true, okapi::AbstractMotor::gearset::red,
                        okapi::AbstractMotor::encoderUnits::degrees);
 
+/*
+ * inline std::shared_ptr<okapi::Motor> mtr_left = std::make_shared<okapi::Motor>(okapi::Motor(13, false, okapi::AbstractMotor::gearset::red,
+                      okapi::AbstractMotor::encoderUnits::degrees));
+inline std::shared_ptr<okapi::Motor> mtr_right = std::make_shared<okapi::Motor>(okapi::Motor(14, true, okapi::AbstractMotor::gearset::red,
+                       okapi::AbstractMotor::encoderUnits::degrees));
+ */
+
 inline pyro::lift main_lift(
-        {mtr_left, mtr_right},
+        std::make_shared<okapi::MotorGroup>(okapi::MotorGroup({mtr_left, mtr_right})),
         (1.0 / 6.0),
         90, 0,
         pyro::lift::LOWERED
@@ -54,7 +65,7 @@ inline okapi::Motor side_lift_mtr(7, false, okapi::AbstractMotor::gearset::red, 
 
 // wip, needs updating
 inline pyro::lift side_lift(
-        {side_lift_mtr},
+        std::make_shared<okapi::MotorGroup>(okapi::MotorGroup({side_lift_mtr})),
         (1.0 / 5.0),
         450, 0,
         pyro::lift::LOWERED
@@ -64,7 +75,7 @@ inline okapi::Motor back_lift_mtr(16, false, okapi::AbstractMotor::gearset::red,
 
 // wip, needs updating
 inline pyro::lift back_lift(
-        {back_lift_mtr},
+        std::make_shared<okapi::MotorGroup>(okapi::MotorGroup({back_lift_mtr})),
         (1.0 / 5.0),
         -23, -240,
         pyro::lift::RAISED

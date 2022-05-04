@@ -15,12 +15,13 @@ namespace pyro {
             LOWERED
         };
 
-        lift(okapi::MotorGroup lift_motors, double gear_ratio, double raised_pos, double lowered_pos, lift_state initial_state);
+        lift(std::shared_ptr<okapi::MotorGroup> lift_motors, double gear_ratio, double raised_pos, double lowered_pos, lift_state initial_state);
 
         void toggle();
 
+        std::shared_ptr<okapi::MotorGroup> lift_motors;
+
     private:
-        okapi::MotorGroup lift_motors;
 
         lift_state state;
 

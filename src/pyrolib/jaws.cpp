@@ -84,6 +84,7 @@ namespace pyro {
             return true;
         }
         else{
+            jawsMotor.moveVoltage(-2000);
             return false;
         }
     }

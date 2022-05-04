@@ -6,18 +6,18 @@
 #include <utility>
 
 namespace pyro {
-    lift::lift(okapi::MotorGroup lift_motors,
+    lift::lift(std::shared_ptr<okapi::MotorGroup> lift_motors,
                double gear_ratio,
                double raised_pos, double lowered_pos,
                lift_state initial_state
     ) :
-            lift_motors(std::move(lift_motors)),
+            lift_motors(lift_motors),
             gear_ratio(gear_ratio),
             raised_pos(raised_pos),
             lowered_pos(lowered_pos) {
         // wip, problem: calling methods on lift_motors don't seem to update the motor
         // warning message: 'lift_motors' used after it was moved
-        lift_motors.tarePosition();
+        lift_motors->tarePosition();
         state = initial_state;
     }
 
@@ -30,18 +30,19 @@ namespace pyro {
     }
 
     void lift::raise_task() {
-        lift_motors.setCurrentLimit(2500);
+        lift_motors->setCurrentLimit(2500);
         double calculated_pos = (1 / gear_ratio) * raised_pos;
         printf("%lf", calculated_pos);
-        lift_motors.moveAbsolute(calculated_pos, 300);
+        lift_motors->moveAbsolute(calculated_pos, 300);
         pros::delay(40);
         state = RAISED;
     }
 
     void lift::lower_task() {
-        lift_motors.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+        lift_motors->setCurrentLimit(2500);
+        lift_motors->setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
         double calculated_pos = (1 / gear_ratio) * lowered_pos;
-        lift_motors.moveAbsolute(calculated_pos, 300);
+        lift_motors->moveAbsolute(calculated_pos, 300);
         pros::delay(40);
         state = LOWERED;
     }

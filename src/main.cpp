@@ -259,6 +259,8 @@ void autonomous() {
 
 [[noreturn]] void opcontrol() {
     //imu.tare();
+    main_jaws.close();
+    side_jaws.close();
 
     bool armOut = false;
     bool frontLiftUp = true;
@@ -365,6 +367,54 @@ void autonomous() {
         if(intake_btn.changedToPressed()) {
             intake.toggle();
         }
+
+        if(front_lift_reset.isPressed()){
+            //mtr_left.setCurrentLimit(2500);
+            //mtr_right.setCurrentLimit(2500);
+            main_lift.lift_motors->setCurrentLimit(2500);
+
+            main_lift.lift_motors->moveVoltage(-4000);
+            main_lift.lift_motors->tarePosition();
+            //mtr_left.moveVoltage(-4000);
+            //mtr_left.tarePosition();
+
+            //mtr_right.moveVoltage(-4000);
+            //mtr_right.tarePosition();
+        }
+        if(front_lift_reset.changedToReleased()){
+            /*
+            mtr_left.setCurrentLimit(0);
+            mtr_right.setCurrentLimit(0);
+
+            mtr_left.moveVoltage(0);
+
+            mtr_right.moveVoltage(0);*/
+            main_lift.lift_motors->setCurrentLimit(0);
+            main_lift.lift_motors->moveVoltage(0);
+        }
+
+        if(back_lift_reset.isPressed()){
+            /*
+            back_lift_mtr.setCurrentLimit(2500);
+
+            back_lift_mtr.moveVoltage(4000);
+            back_lift_mtr.tarePosition();
+             */
+
+            back_lift.lift_motors->setCurrentLimit(2500);
+            back_lift.lift_motors->moveVoltage(4000);
+            back_lift.lift_motors->tarePosition();
+        }
+        if(back_lift_reset.changedToReleased()){
+            /*
+            back_lift_mtr.setCurrentLimit(0);
+
+            back_lift_mtr.moveVoltage(0);
+             */
+            back_lift.lift_motors->setCurrentLimit(0);
+            back_lift.lift_motors->moveVoltage(0);
+        }
+
 
         /*
         if(prosMaster.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)){
