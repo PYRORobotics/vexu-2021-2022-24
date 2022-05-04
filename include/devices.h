@@ -66,7 +66,7 @@ inline okapi::Motor back_lift_mtr(16, false, okapi::AbstractMotor::gearset::red,
 inline pyro::lift back_lift(
         {back_lift_mtr},
         (1.0 / 5.0),
-        -30, -240,
+        -23, -240,
         pyro::lift::RAISED
 );
 

@@ -18,7 +18,7 @@ namespace pyro {
             state = STOPPED;
         } else {
             intake_motor.setCurrentLimit(2500);
-            intake_motor.moveVelocity(30);
+            intake_motor.moveVelocity(60);
             state = RUNNING;
         }
     }
