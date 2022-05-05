@@ -63,7 +63,7 @@ void initialize() {
 
     chassis.profileController->generatePath({
                                                     {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
-                                                    {50_in, 0_in, 0_deg}}, // The next point in the profile, 3 feet forward
+                                                    {70_in, 0_in, 0_deg}}, // The next point in the profile, 3 feet forward
                                             "backwardGoalStraight" // Profile name
     );
 
@@ -158,7 +158,7 @@ void autonomous() {
 
         pros::delay(350);
 
-        main_lift.toggle();
+        //main_lift.toggle();
 /*
         deployLift2.join();
         //chassis.getChassisController()->turnAngle(-10_deg);
@@ -187,7 +187,7 @@ void autonomous() {
         pros::delay(100);
         chassis.profileController->waitUntilSettled();
         //main_lift.toggle();
-        main_lift.lower();
+        //main_lift.lower();
 
         pros::delay(6000);
     }
@@ -268,7 +268,7 @@ void autonomous() {
     //imu.tare();
     main_jaws.close();
     side_jaws.close();
-    main_lift.lower();
+    //main_lift.lower();
 
     bool armOut = false;
     bool frontLiftUp = true;

@@ -8,6 +8,7 @@
 #include "include/controller_lcd.h"
 #include "include/chassis.h"
 #include "include/jaws.h"
+#include "include/jaws2.h"
 #include "include/lift.h"
 #include "include/intake.h"
 
