@@ -57,13 +57,13 @@ void initialize() {
 
     chassis.profileController->generatePath({
                                                     {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
-                                                    {42_in, 0_in, 0_deg}}, // The next point in the profile, 3 feet forward
+                                                    {46_in, 0_in, 0_deg}}, // The next point in the profile, 3 feet forward
                                             "forwardGoalStraight" // Profile name
     );
 
     chassis.profileController->generatePath({
                                                     {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
-                                                    {70_in, 0_in, 0_deg}}, // The next point in the profile, 3 feet forward
+                                                    {65_in, 0_in, 0_deg}}, // The next point in the profile, 3 feet forward
                                             "backwardGoalStraight" // Profile name
     );
 
